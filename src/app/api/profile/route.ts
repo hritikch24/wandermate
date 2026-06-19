@@ -16,6 +16,7 @@ export async function GET() {
       select: {
         id: true, name: true, email: true, avatar: true, bio: true, age: true,
         phone: true, languages: true, interests: true, travelStyle: true,
+        instagram: true, facebook: true, twitter: true, linkedin: true,
         verified: true, rating: true, tripsCount: true, createdAt: true,
       },
     });
@@ -63,14 +64,19 @@ export async function PATCH(req: NextRequest) {
     if (data.travelStyle !== undefined) updateData.travelStyle = data.travelStyle;
     if (data.languages !== undefined) updateData.languages = JSON.stringify(data.languages);
     if (data.interests !== undefined) updateData.interests = JSON.stringify(data.interests);
+    if (data.instagram !== undefined) updateData.instagram = data.instagram;
+    if (data.facebook !== undefined) updateData.facebook = data.facebook;
+    if (data.twitter !== undefined) updateData.twitter = data.twitter;
+    if (data.linkedin !== undefined) updateData.linkedin = data.linkedin;
 
     const user = await prisma.user.update({
       where: { id: userId },
       data: updateData,
       select: {
         id: true, name: true, email: true, avatar: true, bio: true, age: true,
-        travelStyle: true, languages: true, interests: true, verified: true,
-        rating: true, tripsCount: true,
+        travelStyle: true, languages: true, interests: true,
+        instagram: true, facebook: true, twitter: true, linkedin: true,
+        verified: true, rating: true, tripsCount: true,
       },
     });
 

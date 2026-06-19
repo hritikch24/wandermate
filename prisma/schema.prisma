@@ -20,6 +20,11 @@ model User {
   languages     String    @default("[]")
   interests     String    @default("[]")
   travelStyle   String?
+  instagram     String?
+  facebook      String?
+  twitter       String?
+  linkedin      String?
+  socialLinks   String    @default("{}") // JSON for any extra links
   verified      Boolean   @default(false)
   rating        Float     @default(0)
   tripsCount    Int       @default(0)

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
@@ -48,15 +49,12 @@ export default function DashboardPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authStatus === 'unauthenticated') {
-      router.push('/auth/signin');
-    }
+    if (authStatus === 'unauthenticated') router.push('/auth/signin');
   }, [authStatus, router]);
 
   useEffect(() => {
     if (authStatus !== 'authenticated') return;
     setLoading(true);
-
     Promise.all([
       fetch('/api/trip-requests?type=received').then(r => r.json()).catch(() => ({ requests: [] })),
       fetch('/api/trip-requests?type=sent').then(r => r.json()).catch(() => ({ requests: [] })),
@@ -79,9 +77,7 @@ export default function DashboardPage() {
         body: JSON.stringify({ requestId, status: action }),
       });
       if (res.ok) {
-        setReceivedRequests(prev =>
-          prev.map(r => r.id === requestId ? { ...r, status: action } : r)
-        );
+        setReceivedRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: action } : r));
       }
     } catch {} finally {
       setActionLoading(null);
@@ -129,15 +125,24 @@ export default function DashboardPage() {
     catch { return d; }
   };
 
+  const currentUserId = (session?.user as { id?: string })?.id;
+
   return (
     <>
       <Navbar />
       <main className="min-h-screen pt-24 pb-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h1 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {session?.user?.name?.split(' ')[0]}
-          </h1>
-          <p className="text-gray-500 mb-8">Manage your trips, requests, and bookings</p>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome back, {session?.user?.name?.split(' ')[0]}
+              </h1>
+              <p className="text-gray-500">Manage your trips, requests, and bookings</p>
+            </div>
+            <Link href="/profile/edit" className="px-4 py-2 rounded-xl text-sm font-medium text-brand-600 border border-brand-200 hover:bg-brand-50 transition-all">
+              Edit Profile
+            </Link>
+          </div>
 
           {/* Tabs */}
           <div className="flex gap-1 mb-8 overflow-x-auto pb-2">
@@ -161,36 +166,56 @@ export default function DashboardPage() {
                 </div>
               ) : receivedRequests.map(req => (
                 <div key={req.id} className="glass-card rounded-2xl p-6">
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-romantic-400 flex items-center justify-center text-white font-bold">
-                        {req.user?.name?.split(' ').map(n => n[0]).join('') || '?'}
-                      </div>
+                      <Link href={`/profile/${req.user?.id}`} className="shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-romantic-400 flex items-center justify-center text-white font-bold hover:scale-110 transition-transform">
+                          {req.user?.name?.split(' ').map(n => n[0]).join('') || '?'}
+                        </div>
+                      </Link>
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-gray-900">{req.user?.name}</span>
-                          {req.user?.verified && <span className="text-blue-500 text-xs">Verified</span>}
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <Link href={`/profile/${req.user?.id}`} className="font-semibold text-gray-900 hover:text-brand-600 transition-colors">
+                            {req.user?.name}
+                          </Link>
+                          {req.user?.verified && (
+                            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                          )}
                           {statusBadge(req.status)}
                         </div>
                         <p className="text-sm text-gray-500 mb-1">
                           Wants to join: <span className="font-medium text-gray-700">{req.trip.title}</span> ({req.trip.destination})
                         </p>
+                        {req.user?.bio && <p className="text-xs text-gray-500 mb-1 line-clamp-1">{req.user.bio}</p>}
                         {req.message && <p className="text-sm text-gray-600 italic">&ldquo;{req.message}&rdquo;</p>}
-                        <p className="text-xs text-gray-400 mt-1">{formatDate(req.createdAt)}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <p className="text-xs text-gray-400">{formatDate(req.createdAt)}</p>
+                          <Link href={`/profile/${req.user?.id}`} className="text-xs text-brand-600 font-medium hover:underline">
+                            View Full Profile
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                    {req.status === 'pending' && (
-                      <div className="flex gap-2 shrink-0">
-                        <button onClick={() => handleAction(req.id, 'accepted')} disabled={actionLoading === req.id}
-                          className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-green-500 hover:bg-green-600 transition-all disabled:opacity-50">
-                          Accept
-                        </button>
-                        <button onClick={() => handleAction(req.id, 'rejected')} disabled={actionLoading === req.id}
-                          className="px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all disabled:opacity-50">
-                          Decline
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex gap-2 shrink-0">
+                      {req.status === 'pending' && (
+                        <>
+                          <button onClick={() => handleAction(req.id, 'accepted')} disabled={actionLoading === req.id}
+                            className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-green-500 hover:bg-green-600 transition-all disabled:opacity-50">
+                            Accept
+                          </button>
+                          <button onClick={() => handleAction(req.id, 'rejected')} disabled={actionLoading === req.id}
+                            className="px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-all disabled:opacity-50">
+                            Decline
+                          </button>
+                        </>
+                      )}
+                      {req.status === 'accepted' && req.user?.id && (
+                        <Link href={`/chat/${req.user.id}`}
+                          className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-romantic-500 hover:shadow-lg transition-all">
+                          Chat
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -206,18 +231,30 @@ export default function DashboardPage() {
                 </div>
               ) : sentRequests.map(req => (
                 <div key={req.id} className="glass-card rounded-2xl p-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold text-gray-900">{req.trip.title}</span>
                         {statusBadge(req.status)}
                       </div>
                       <p className="text-sm text-gray-500">
-                        Trip by {req.trip.user?.name || 'Unknown'} · {req.trip.destination}
+                        Trip by{' '}
+                        {req.trip.user?.id ? (
+                          <Link href={`/profile/${req.trip.user.id}`} className="text-brand-600 hover:underline font-medium">{req.trip.user.name}</Link>
+                        ) : (
+                          <span>{req.trip.user?.name || 'Unknown'}</span>
+                        )}
+                        {' '}· {req.trip.destination}
                       </p>
                       {req.message && <p className="text-sm text-gray-600 mt-1 italic">&ldquo;{req.message}&rdquo;</p>}
                       <p className="text-xs text-gray-400 mt-1">{formatDate(req.createdAt)}</p>
                     </div>
+                    {req.status === 'accepted' && req.trip.user?.id && (
+                      <Link href={`/chat/${req.trip.user.id}`}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-romantic-500 hover:shadow-lg transition-all">
+                        Chat with {req.trip.user.name?.split(' ')[0]}
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}
@@ -261,10 +298,10 @@ export default function DashboardPage() {
                 </div>
               ) : bookings.map(bk => (
                 <div key={bk.id} className="glass-card rounded-2xl p-6">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-gray-900">{bk.guide.user.name}</span>
+                        <Link href={`/profile/${bk.guide.user.id}`} className="font-semibold text-gray-900 hover:text-brand-600">{bk.guide.user.name}</Link>
                         {statusBadge(bk.status)}
                       </div>
                       <p className="text-sm text-gray-500">
@@ -272,6 +309,12 @@ export default function DashboardPage() {
                       </p>
                       {bk.notes && <p className="text-sm text-gray-600 mt-1 italic">&ldquo;{bk.notes}&rdquo;</p>}
                     </div>
+                    {bk.status === 'accepted' && (
+                      <Link href={`/chat/${bk.guide.user.id}`}
+                        className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-romantic-500 hover:shadow-lg transition-all">
+                        Chat
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

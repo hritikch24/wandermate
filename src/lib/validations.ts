@@ -33,6 +33,10 @@ export const profileSchema = z.object({
   travelStyle: z.string().optional(),
   languages: z.array(z.string()).optional(),
   interests: z.array(z.string()).optional(),
+  instagram: z.string().max(100).optional(),
+  facebook: z.string().max(200).optional(),
+  twitter: z.string().max(100).optional(),
+  linkedin: z.string().max(200).optional(),
 });
 
 export const guideSchema = z.object({
