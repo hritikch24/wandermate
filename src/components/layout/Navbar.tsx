@@ -70,6 +70,9 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
           <div className="hidden md:flex items-center gap-3">
             {session ? (
               <>
+                <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">
+                  Dashboard
+                </Link>
                 <span className="text-sm text-gray-600">Hi, {session.user?.name?.split(' ')[0]}</span>
                 <button
                   onClick={() => signOut()}

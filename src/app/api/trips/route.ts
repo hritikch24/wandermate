@@ -9,11 +9,19 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const destination = searchParams.get('destination');
     const sponsorType = searchParams.get('sponsorType');
+    const mine = searchParams.get('mine');
     const status = searchParams.get('status') || 'open';
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const where: Record<string, unknown> = { status };
+    const where: Record<string, unknown> = {};
+    if (mine === 'true') {
+      const userId = await getCurrentUserId();
+      if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      where.userId = userId;
+    } else {
+      where.status = status;
+    }
     if (destination) where.destination = destination;
     if (sponsorType) where.sponsorType = sponsorType;
 

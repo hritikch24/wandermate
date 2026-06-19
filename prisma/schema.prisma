@@ -27,6 +27,7 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   trips         Trip[]
+  tripRequests  TripRequest[] @relation("TripRequestsSent")
   guideProfile  Guide?
   sentMessages  Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
@@ -55,6 +56,7 @@ model Trip {
   updatedAt     DateTime @updatedAt
 
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requests      TripRequest[]
 
   @@index([destination])
   @@index([sponsorType])
@@ -113,6 +115,24 @@ model Review {
 
   @@unique([authorId, targetId])
   @@index([targetId])
+}
+
+model TripRequest {
+  id        String   @id @default(cuid())
+  tripId    String
+  userId    String
+  message   String?
+  status    String   @default("pending") // pending | accepted | rejected
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      User     @relation("TripRequestsSent", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tripId, userId])
+  @@index([tripId])
+  @@index([userId])
+  @@index([status])
 }
 
 model Booking {

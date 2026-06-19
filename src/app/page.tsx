@@ -366,7 +366,8 @@ export default function Home() {
               )}
 
               <div className="text-center mt-12">
-                <button className="px-8 py-4 rounded-2xl text-lg font-semibold text-white bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
+                <button onClick={() => { window.location.href = '/auth/register?role=guide'; }}
+                  className="px-8 py-4 rounded-2xl text-lg font-semibold text-white bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
                   Become a Guide
                 </button>
               </div>
