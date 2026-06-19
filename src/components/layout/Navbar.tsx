@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { CITIES } from '@/data/cities';
@@ -9,6 +9,23 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [citiesOpen, setCitiesOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  // Poll for pending notifications every 30s when logged in
+  useEffect(() => {
+    if (!session) return;
+    const fetchCount = () => {
+      fetch('/api/notifications')
+        .then(r => r.json())
+        .then(data => {
+          setPendingCount(data.total || 0);
+        })
+        .catch(() => {});
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-white/20">
@@ -70,8 +87,16 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
           <div className="hidden md:flex items-center gap-3">
             {session ? (
               <>
-                <Link href="/dashboard" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">
+                <Link href="/dashboard" className="relative px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">
+                  <svg className="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
                   Dashboard
+                  {pendingCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold animate-pulse">
+                      {pendingCount}
+                    </span>
+                  )}
                 </Link>
                 <span className="text-sm text-gray-600">Hi, {session.user?.name?.split(' ')[0]}</span>
                 <button
@@ -94,15 +119,27 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
           </div>
 
           {/* Mobile menu button */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-lg hover:bg-brand-50 transition-colors">
-            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            {session && pendingCount > 0 && (
+              <Link href="/dashboard" className="relative p-2">
+                <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse">
+                  {pendingCount}
+                </span>
+              </Link>
+            )}
+            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-lg hover:bg-brand-50 transition-colors">
+              <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -119,14 +156,23 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
               </Link>
             ))}
             <hr className="my-2 border-gray-200" />
-            <Link href="/#how-it-works" className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">How It Works</Link>
-            <Link href="/#travelers" className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">Find Partners</Link>
-            <Link href="/#safety" className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">Safety</Link>
+            <Link href="/#how-it-works" onClick={() => setMenuOpen(false)} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">How It Works</Link>
+            <Link href="/#travelers" onClick={() => setMenuOpen(false)} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">Find Partners</Link>
+            <Link href="/#safety" onClick={() => setMenuOpen(false)} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-brand-50">Safety</Link>
             <hr className="my-2 border-gray-200" />
             {session ? (
-              <button onClick={() => signOut()} className="w-full py-2.5 text-sm font-semibold text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-50">
-                Sign Out ({session.user?.name?.split(' ')[0]})
-              </button>
+              <>
+                <Link href="/dashboard" onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm font-semibold text-brand-600 border border-brand-200 hover:bg-brand-50">
+                  <span>Dashboard</span>
+                  {pendingCount > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-xs font-bold">{pendingCount} new</span>
+                  )}
+                </Link>
+                <button onClick={() => signOut()} className="w-full mt-1 py-2.5 text-sm font-semibold text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-50">
+                  Sign Out ({session.user?.name?.split(' ')[0]})
+                </button>
+              </>
             ) : (
               <Link href="/auth/register" onClick={() => setMenuOpen(false)}
                 className="block w-full py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-brand-500 via-romantic-500 to-warm-500 text-center">
