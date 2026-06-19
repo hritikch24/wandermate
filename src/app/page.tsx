@@ -187,7 +187,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <p className="text-sm font-semibold text-brand-500 uppercase tracking-wider mb-2">Simple & Safe</p>
             <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              How WanderMate Works
+              How Luventra Works
             </h2>
             <p className="text-gray-600 max-w-xl mx-auto">Three simple steps to find your perfect travel companion</p>
           </div>
@@ -214,7 +214,7 @@ export default function Home() {
               },
               {
                 step: '03',
-                title: 'Plan & Wander',
+                title: 'Plan & Explore',
                 desc: 'Plan your itinerary together, split expenses fairly, and embark on an adventure. Rate each other after and build your trust score.',
                 icon: (
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -253,7 +253,7 @@ export default function Home() {
           </div>
 
           <p className="text-center mt-8 text-sm text-gray-500">
-            Access any city directly: <span className="font-mono text-brand-600">mussoorie.wandermate.com</span>, <span className="font-mono text-brand-600">goa.wandermate.com</span>, etc.
+            Access any city directly: <span className="font-mono text-brand-600">mussoorie.luventra.com</span>, <span className="font-mono text-brand-600">goa.luventra.com</span>, etc.
           </p>
         </div>
       </section>
@@ -383,7 +383,7 @@ export default function Home() {
             <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Travel with Confidence
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto">We built WanderMate from the ground up with safety as the foundation, addressing every concern real travelers have shared.</p>
+            <p className="text-gray-600 max-w-xl mx-auto">We built Luventra from the ground up with safety as the foundation, addressing every concern real travelers have shared.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-6">
@@ -425,7 +425,7 @@ export default function Home() {
               onClick={() => setModalOpen(true)}
               className="px-10 py-4 rounded-2xl text-lg font-semibold text-white bg-gradient-to-r from-brand-500 via-romantic-500 to-warm-500 shadow-xl shadow-romantic-200/50 hover:shadow-2xl hover:scale-105 transition-all"
             >
-              Join WanderMate — It&apos;s Free
+              Join Luventra — It&apos;s Free
             </button>
           </div>
         </div>

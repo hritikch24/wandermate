@@ -14,7 +14,7 @@ export function generateMetadata({ params }: Props): Metadata {
   const city = CITIES[params.city];
   if (!city) return {};
 
-  const title = `Find Travel Partners in ${city.name} — WanderMate`;
+  const title = `Find Travel Partners in ${city.name} — Luventra`;
   const description = `Looking for a travel buddy in ${city.name}, ${city.state || city.country}? Connect with verified travelers, plan trips together, and explore ${city.name}. ${city.description}`;
 
   return {
@@ -29,7 +29,7 @@ export function generateMetadata({ params }: Props): Metadata {
     alternates: { canonical: `/city/${city.slug}` },
     openGraph: {
       title, description,
-      url: `https://wandermate.com/city/${city.slug}`,
+      url: `https://luventra.com/city/${city.slug}`,
       images: [{ url: city.heroImage, width: 1200, height: 630, alt: `Travel to ${city.name}` }],
       type: 'website', locale: 'en_IN',
     },
@@ -139,7 +139,7 @@ export default async function CityPage({ params }: Props) {
       name: city.state || city.country,
       containedInPlace: { '@type': 'Country', name: city.country },
     },
-    url: `https://wandermate.com/city/${city.slug}`,
+    url: `https://luventra.com/city/${city.slug}`,
     image: city.heroImage,
   };
 

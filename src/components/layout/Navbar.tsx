@@ -23,8 +23,8 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
               </svg>
             </div>
             <span style={{ fontFamily: 'var(--font-display)' }} className="text-xl font-bold tracking-tight">
-              <span className="gradient-text">Wander</span>
-              <span className="text-gray-800">Mate</span>
+              <span className="gradient-text">Luv</span>
+              <span className="text-gray-800">entra</span>
             </span>
           </Link>
 

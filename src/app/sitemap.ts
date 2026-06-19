@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { CITY_SLUGS } from '@/data/cities';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://wandermate.com';
+  const baseUrl = 'https://luventra.com';
 
   const cityPages = CITY_SLUGS.map((city) => ({
     url: `${baseUrl}/city/${city}`,
@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const subdomainPages = CITY_SLUGS.map((city) => ({
-    url: `https://${city}.wandermate.com`,
+    url: `https://${city}.luventra.com`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,

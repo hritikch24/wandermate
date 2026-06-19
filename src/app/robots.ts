@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/auth/'],
       },
     ],
-    sitemap: 'https://wandermate.com/sitemap.xml',
+    sitemap: 'https://luventra.com/sitemap.xml',
   };
 }

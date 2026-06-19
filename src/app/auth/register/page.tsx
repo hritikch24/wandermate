@@ -66,7 +66,7 @@ export default function RegisterPage() {
               </svg>
             </div>
           </Link>
-          <h1 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl font-bold text-gray-900 mb-2">Join WanderMate</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl font-bold text-gray-900 mb-2">Join Luventra</h1>
           <p className="text-gray-600">Create your account and start connecting with travelers</p>
         </div>
 

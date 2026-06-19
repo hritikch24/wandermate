@@ -18,7 +18,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span style={{ fontFamily: 'var(--font-display)' }} className="text-xl font-bold">
-                <span className="text-brand-400">Wander</span>Mate
+                <span className="text-brand-400">Luv</span>entra
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
@@ -26,7 +26,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               {['twitter', 'instagram', 'facebook', 'youtube'].map((social) => (
-                <a key={social} href={`https://${social}.com/wandermate`} target="_blank" rel="noopener noreferrer"
+                <a key={social} href={`https://${social}.com/luventra`} target="_blank" rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors" aria-label={social}>
                   <span className="text-xs uppercase font-bold">{social[0]}</span>
                 </a>
@@ -74,7 +74,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} WanderMate. All rights reserved. Made with love for wanderers.</p>
+          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} Luventra. All rights reserved. Made with love for wanderers.</p>
           <p className="text-sm text-gray-500">
             Available in: {Object.values(CITIES).map((c) => c.name).join(' · ')}
           </p>

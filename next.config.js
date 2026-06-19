@@ -5,7 +5,7 @@ const nextConfig = {
       beforeFiles: [
         {
           source: '/:path*',
-          has: [{ type: 'host', value: '(?<city>[a-z]+)\\.wandermate\\.com' }],
+          has: [{ type: 'host', value: '(?<city>[a-z]+)\\.luventra\\.com' }],
           destination: '/city/:city/:path*',
         },
         {

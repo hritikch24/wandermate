@@ -5,12 +5,12 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const url = request.nextUrl.clone();
 
-  // Extract subdomain: e.g. "mussoorie.wandermate.com" → "mussoorie"
+  // Extract subdomain: e.g. "mussoorie.luventra.com" → "mussoorie"
   // Also handles local dev: "mussoorie.localhost:3000" → "mussoorie"
   let subdomain: string | null = null;
 
-  if (hostname.includes('.wandermate.com')) {
-    subdomain = hostname.split('.wandermate.com')[0];
+  if (hostname.includes('.luventra.com')) {
+    subdomain = hostname.split('.luventra.com')[0];
   } else if (hostname.includes('.localhost')) {
     subdomain = hostname.split('.localhost')[0];
   }
