@@ -16,7 +16,7 @@ model User {
   avatar        String?
   bio           String?
   age           Int?
-  phone         String    @unique
+  phone         String?   @unique
   phoneVerified Boolean   @default(false)
   aadhaarVerified Boolean @default(false)
   languages     String    @default("[]")

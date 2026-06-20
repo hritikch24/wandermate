@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         name, email, passwordHash, age,
-        phone: phone || `unset-${Date.now()}`,
+        phone: phone || null,
         phoneVerified: requirePhoneOtp,
       },
       select: { id: true, name: true, email: true, createdAt: true },
