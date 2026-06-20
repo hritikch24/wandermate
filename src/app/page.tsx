@@ -8,7 +8,32 @@ import TravelerCard from '@/components/features/TravelerCard';
 import GuideCard from '@/components/features/GuideCard';
 import SearchModeToggle from '@/components/features/SearchModeToggle';
 import TripPlanModal from '@/components/features/TripPlanModal';
+import Link from 'next/link';
 import { CITIES, SAMPLE_TRAVELERS, SAMPLE_GUIDES, SearchMode, TravelerProfile, GuideProfile } from '@/data/cities';
+import { STATES, STATE_SLUGS } from '@/data/states';
+import { TRAVEL_TOPICS, TOPIC_SLUGS } from '@/data/travelTopics';
+import { SAMPLE_BLOG_POSTS } from '@/data/sampleBlogPosts';
+
+const POPULAR_STATE_SLUGS = [
+  'rajasthan', 'kerala', 'goa', 'himachal-pradesh', 'uttarakhand', 'ladakh',
+  'karnataka', 'tamil-nadu', 'maharashtra', 'andaman-and-nicobar-islands',
+  'meghalaya', 'gujarat', 'punjab', 'sikkim',
+].filter((slug) => STATES[slug]);
+
+const FEATURED_TOPIC_SLUGS = TOPIC_SLUGS.slice(0, 4);
+
+const HOMEPAGE_FAQS: Array<{ question: string; answer: string }> = [
+  { question: 'What is Luventra?', answer: 'Luventra is a platform that helps travelers in India find verified travel partners and companions for trips — whether you want to sponsor someone\'s journey, find a sponsor, or simply travel together and split costs. It connects solo travelers, groups, and local guides across every Indian state.' },
+  { question: 'Is Luventra free to use?', answer: 'Yes, creating a profile, browsing travelers, and connecting with potential travel partners is free on Luventra. The platform makes money through optional premium features, not by charging for basic matching.' },
+  { question: 'How does Luventra verify travelers?', answer: 'Every profile on Luventra goes through identity verification using government ID, phone number verification, and social media linking, which significantly reduces fake profiles compared to open community forums or social media groups.' },
+  { question: 'Is it safe to travel with someone I met on Luventra?', answer: 'Luventra is built with safety as a foundation — verified identities, a trust score system based on completed trips and reviews, in-app chat and video calls before meeting in person, and an emergency SOS feature. As with any new connection, we recommend getting to know your match through chat and video calls first.' },
+  { question: 'Can I find a travel partner for solo female travel in India?', answer: 'Yes, many women on Luventra specifically look for other verified women travelers for solo trips across India, and the platform\'s verification and trust score systems are particularly useful for solo female travelers prioritizing safety.' },
+  { question: 'What does "sponsor a trip" mean on Luventra?', answer: 'Some travelers on Luventra offer to sponsor part or all of a trip\'s cost in exchange for company, while others are looking for a sponsor to make a trip financially possible. This sponsor matching sits alongside the more common "just travel together and split costs" mode.' },
+  { question: 'Can I book a local guide through Luventra?', answer: 'Yes, Luventra also connects travelers with verified local guides in major cities who offer their expertise for a per-day fee, which is a different mode from finding a peer travel partner and is accessible via the guide toggle on the homepage.' },
+  { question: 'Which destinations can I find travel partners for on Luventra?', answer: 'Luventra covers all major Indian states and union territories — from Rajasthan\'s deserts and Kerala\'s backwaters to Ladakh\'s high passes and the Andaman Islands\' beaches — with dedicated destination pages and a growing community of travelers in each region.' },
+  { question: 'How do I split travel costs with a partner found on Luventra?', answer: 'Luventra does not currently process payments between travelers directly; partners typically agree on cost-splitting arrangements (transport, stays, food) themselves once matched, the same way friends would coordinate a shared trip.' },
+  { question: 'Does Luventra work for backpacking and budget travel?', answer: 'Yes, Luventra is widely used by backpackers and budget travelers in India specifically because sharing costs — a private cab, a houseboat, a hostel dorm — with a compatible travel partner is one of the most effective ways to reduce per-person travel costs.' },
+];
 
 // Transform API trip data to TravelerProfile format for card display
 function apiTripToTraveler(trip: Record<string, unknown>): TravelerProfile {
@@ -107,8 +132,43 @@ export default function Home() {
   const filteredTravelers = trips;
   const filteredGuides = guides;
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Luventra',
+    url: 'https://luventra.co',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://luventra.co/?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Luventra',
+    url: 'https://luventra.co',
+    description: 'Luventra connects verified travel partners and companions across India for solo trips, group travel, and sponsored journeys.',
+  };
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: HOMEPAGE_FAQS.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  };
+
+  const latestBlogPosts = SAMPLE_BLOG_POSTS.slice(-3).reverse();
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <Navbar />
 
       {/* ============ HERO ============ */}
@@ -403,6 +463,136 @@ export default function Home() {
                   <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ POPULAR DESTINATIONS (STATES) ============ */}
+      <section className="py-24 px-4 bg-white/40">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-500 uppercase tracking-wider mb-2">Across India</p>
+            <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Popular Destinations
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              From the deserts of Rajasthan to the backwaters of Kerala, the high passes of Ladakh to the beaches of Goa —
+              explore state-level travel guides and connect with verified travel partners headed the same way.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {POPULAR_STATE_SLUGS.map((slug) => {
+              const state = STATES[slug];
+              return (
+                <Link
+                  key={slug}
+                  href={`/state/${slug}`}
+                  className="glass-card rounded-2xl overflow-hidden trip-card group block"
+                >
+                  <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${state.heroImage})` }} />
+                  <div className="p-5">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors mb-1">
+                      {state.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{state.tagline}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/destinations" className="px-6 py-3 rounded-xl text-sm font-semibold text-brand-600 bg-white/70 border border-brand-200 hover:bg-white transition-all inline-block">
+              View All {STATE_SLUGS.length} Destinations
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ TRAVEL TIPS PREVIEW ============ */}
+      <section className="py-24 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-romantic-500 uppercase tracking-wider mb-2">Plan Smarter</p>
+            <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Travel Tips & Guides
+            </h2>
+            <p className="text-gray-600 max-w-xl mx-auto">In-depth guides covering budgets, safety, seasons, and more — written to help you plan a better trip.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURED_TOPIC_SLUGS.map((slug) => (
+              <Link key={slug} href={`/travel-guide/${slug}`} className="glass-card rounded-2xl p-6 trip-card group block">
+                <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors text-sm mb-2">
+                  {TRAVEL_TOPICS[slug].title}
+                </h3>
+                <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">{TRAVEL_TOPICS[slug].intro}</p>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/travel-guide" className="px-6 py-3 rounded-xl text-sm font-semibold text-romantic-600 bg-white/70 border border-romantic-200 hover:bg-white transition-all inline-block">
+              Explore the Full Travel Guide
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ LATEST FROM BLOG ============ */}
+      <section className="py-24 px-4 bg-white/40">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-forest-500 uppercase tracking-wider mb-2">From the Blog</p>
+            <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Latest from Luventra
+            </h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Stories, itineraries, and practical guides from across India.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestBlogPosts.map((post) => (
+              <Link key={post.slug} href={`/blog/${post.slug}`} className="glass-card rounded-2xl overflow-hidden trip-card group block">
+                <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${post.coverImage})` }} />
+                <div className="p-5">
+                  <p className="text-xs font-semibold text-brand-500 uppercase tracking-wider mb-2">{post.category}</p>
+                  <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors text-sm leading-snug mb-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-gray-500">{post.readTime} min read</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/blog" className="px-6 py-3 rounded-xl text-sm font-semibold text-forest-600 bg-white/70 border border-forest-200 hover:bg-white transition-all inline-block">
+              View All Posts
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section className="py-24 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-sm font-semibold text-brand-500 uppercase tracking-wider mb-2">Got Questions?</p>
+            <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+          </div>
+          <div className="space-y-4">
+            {HOMEPAGE_FAQS.map((faq, idx) => (
+              <details key={idx} className="glass-card rounded-xl p-5 group">
+                <summary className="font-semibold text-gray-900 text-sm cursor-pointer flex items-center justify-between gap-4 list-none">
+                  {faq.question}
+                  <svg className="w-4 h-4 text-brand-500 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </summary>
+                <p className="text-sm text-gray-600 leading-relaxed mt-3">{faq.answer}</p>
+              </details>
             ))}
           </div>
         </div>

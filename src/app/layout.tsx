@@ -4,7 +4,7 @@ import AuthProvider from '@/components/providers/AuthProvider';
 import Analytics from '@/components/Analytics';
 import '@/styles/globals.css';
 
-const SEO_KEYWORDS = [
+const RAW_SEO_KEYWORDS = [
   // Core
   'travel partner india', 'travel companion', 'trip partner finder', 'solo travel india',
   'group travel', 'backpacking india', 'travel buddy', 'wanderlust', 'explore india',
@@ -13,19 +13,52 @@ const SEO_KEYWORDS = [
   'solo female travel india', 'group trip planning india', 'india travel community',
   'meet travelers india', 'travel matching app', 'india backpacking community',
   'verified travel partners', 'split travel costs', 'travel sponsor app',
-  // States
-  'Rajasthan tourism', 'Kerala backwaters', 'Goa beaches', 'Himachal Pradesh trip',
-  'Uttarakhand travel', 'Ladakh travel', 'Kashmir tourism', 'Tamil Nadu temples',
-  'Karnataka tourism', 'Maharashtra travel', 'Northeast India travel', 'Sikkim tourism',
-  'Andaman Nicobar tourism', 'Punjab travel', 'Gujarat tourism', 'Madhya Pradesh tourism',
-  'West Bengal travel', 'Odisha tourism', 'Uttar Pradesh travel',
-  // Activities
+  'find someone to travel with', 'travel partner app india', 'india travel guide 2026',
+  'best travel destinations india', 'india tourism guide',
+
+  // States & Union Territories (all 29+)
+  'Rajasthan tourism', 'Punjab travel', 'Haryana tourism', 'Uttarakhand travel',
+  'Delhi tourism', 'Ladakh travel', 'Chandigarh travel', 'Goa beaches',
+  'Gujarat tourism', 'Maharashtra travel', 'Kerala backwaters', 'Karnataka tourism',
+  'Telangana tourism', 'Puducherry travel', 'Lakshadweep tourism', 'Odisha tourism',
+  'Bihar tourism', 'Jharkhand tourism', 'Chhattisgarh tourism', 'Assam tourism',
+  'Meghalaya tourism', 'Manipur tourism', 'Mizoram tourism', 'Nagaland tourism',
+  'Tripura tourism', 'Sikkim tourism', 'Uttar Pradesh travel', 'Himachal Pradesh trip',
+  'Jammu and Kashmir tourism', 'Kashmir tourism', 'Tamil Nadu temples', 'Andhra Pradesh tourism',
+  'Andaman Nicobar tourism', 'West Bengal travel', 'Madhya Pradesh tourism', 'Arunachal Pradesh tourism',
+  'Northeast India travel',
+
+  // Major cities
+  'Jaipur travel guide', 'Udaipur tourism', 'Mumbai travel guide', 'Delhi travel guide',
+  'Bangalore weekend trips', 'Chennai tourism', 'Kolkata travel guide', 'Hyderabad tourism',
+  'Manali travel guide', 'Shimla tourism', 'Rishikesh travel', 'Varanasi tourism',
+  'Agra Taj Mahal travel', 'Leh Ladakh travel', 'Pune weekend trips', 'Mysore tourism',
+
+  // Travel activities
   'trekking india', 'backpacking trip india', 'road trip india', 'adventure sports india',
   'spiritual tourism india', 'beach holiday india', 'mountain trek partner',
   'desert safari rajasthan', 'monsoon travel destinations india', 'digital nomad india',
   'festival travel india', 'temple tour india', 'wildlife safari india', 'honeymoon destinations india',
   'budget travel india', 'luxury travel india', 'cultural tourism india', 'eco tourism india',
+  'scuba diving india', 'surfing india', 'paragliding india', 'camping india',
+  'river rafting india', 'skiing india', 'hot air ballooning india', 'wildlife safari tiger reserve',
+  'houseboat kerala', 'snorkeling andaman', 'rock climbing india', 'cycling tours india',
+  'motorcycle road trip india', 'tiger safari india', 'hill station travel india',
+  'heritage travel india', 'food tourism india', 'winter destinations india', 'summer destinations india',
+
+  // Travel styles
+  'solo travel', 'couple travel india', 'group travel india', 'family travel india',
+  'adventure travel india', 'luxury travel companion', 'budget backpacking india',
+  'digital nomad travel india', 'slow travel india', 'backpacker community india',
+
+  // Long-tail buddy/partner-finder phrases
+  'how to find a travel partner', 'travel buddy for solo trip', 'find travel companion for vacation',
+  'app to find travel partners india', 'trustworthy travel companion india', 'travel partner for women india',
+  'find someone to travel with india', 'group trip with strangers india', 'travel partner for backpacking trip',
+  'meet travel buddy online india',
 ];
+
+const SEO_KEYWORDS = Array.from(new Set(RAW_SEO_KEYWORDS));
 
 export const metadata: Metadata = {
   title: {

@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { STATE_SLUGS } from '@/data/states';
 import { CITY_SLUGS } from '@/data/cities';
+import { TOPIC_SLUGS } from '@/data/travelTopics';
+import { SAMPLE_BLOG_POSTS } from '@/data/sampleBlogPosts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://luventra.co';
@@ -19,12 +21,38 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
+  const topicPages = TOPIC_SLUGS.map((topic) => ({
+    url: `${baseUrl}/travel-guide/${topic}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
+  const blogPostPages = SAMPLE_BLOG_POSTS.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
   const staticPages = [
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/travel-guide`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/destinations`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/auth/register`,
@@ -49,6 +77,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...statePages,
     ...cityPages,
+    ...topicPages,
+    ...blogPostPages,
     ...staticPages,
   ];
 }

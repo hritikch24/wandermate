@@ -107,9 +107,13 @@ export default async function BlogPostPage({ params }: Props) {
   const stateSlug = dbPost ? dbPost.state : samplePost!.state;
   const stateData = stateSlug ? getStateBySlug(stateSlug) : undefined;
 
+  const contentSections = !dbPost ? samplePost!.contentSections : undefined;
+
   const paragraphs = dbPost
     ? dbPost.content.split('\n').filter(Boolean)
-    : generateSampleArticle(samplePost!);
+    : !contentSections
+      ? generateSampleArticle(samplePost!)
+      : [];
 
   const readTime = samplePost ? samplePost.readTime : Math.max(4, Math.round(dbPost!.content.split(' ').length / 200));
 
@@ -186,13 +190,26 @@ export default async function BlogPostPage({ params }: Props) {
           {/* Article */}
           <article className="glass-card rounded-2xl p-8 sm:p-10">
             <p className="text-lg text-gray-700 leading-relaxed mb-6 font-medium">{excerpt}</p>
-            <div className="prose-luventra space-y-5">
-              {paragraphs.map((para, idx) => (
-                <p key={idx} className="text-gray-700 leading-relaxed text-[15px]">
-                  {para.replace(/\*\*/g, '')}
-                </p>
-              ))}
-            </div>
+            {contentSections && contentSections.length > 0 ? (
+              <div className="prose-luventra space-y-8">
+                {contentSections.map((section, idx) => (
+                  <div key={idx}>
+                    <h2 style={{ fontFamily: 'var(--font-display)' }} className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                      {section.heading}
+                    </h2>
+                    <p className="text-gray-700 leading-relaxed text-[15px]">{section.body}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="prose-luventra space-y-5">
+                {paragraphs.map((para, idx) => (
+                  <p key={idx} className="text-gray-700 leading-relaxed text-[15px]">
+                    {para.replace(/\*\*/g, '')}
+                  </p>
+                ))}
+              </div>
+            )}
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-gray-200/60">
