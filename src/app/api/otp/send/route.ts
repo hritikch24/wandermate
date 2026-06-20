@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     // For registration, check if phone already exists
     if (purpose === 'register') {
-      const existing = await prisma.user.findUnique({ where: { phone } });
+      const existing = await prisma.user.findFirst({ where: { phone } });
       if (existing) {
         return NextResponse.json({ error: 'Phone number already registered' }, { status: 409 });
       }

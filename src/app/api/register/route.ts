@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (requirePhoneOtp && phone) {
-      const existingPhone = await prisma.user.findUnique({ where: { phone } });
+      const existingPhone = await prisma.user.findFirst({ where: { phone } });
       if (existingPhone) {
         return NextResponse.json({ error: 'Phone number already registered' }, { status: 409 });
       }
