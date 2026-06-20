@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUserId } from '@/lib/session';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/notifications — get count of pending items for the logged-in user
 export async function GET() {
   try {
