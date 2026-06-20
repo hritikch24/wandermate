@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
         id: true, name: true, avatar: true, bio: true, age: true,
         travelStyle: true, languages: true, interests: true,
         instagram: true, facebook: true, twitter: true, linkedin: true,
-        verified: true, rating: true, tripsCount: true, createdAt: true,
+        verified: true, aadhaarVerified: true, rating: true, tripsCount: true, createdAt: true,
         // Don't expose email/phone by default
       },
     });

@@ -1,34 +1,60 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import AuthProvider from '@/components/providers/AuthProvider';
+import Analytics from '@/components/Analytics';
 import '@/styles/globals.css';
+
+const SEO_KEYWORDS = [
+  // Core
+  'travel partner india', 'travel companion', 'trip partner finder', 'solo travel india',
+  'group travel', 'backpacking india', 'travel buddy', 'wanderlust', 'explore india',
+  'travel mate', 'find travel companion', 'travel sponsorship', 'co-travel', 'trip planning india',
+  'travel partner finder app', 'find a travel buddy online', 'travel companion app india',
+  'solo female travel india', 'group trip planning india', 'india travel community',
+  'meet travelers india', 'travel matching app', 'india backpacking community',
+  'verified travel partners', 'split travel costs', 'travel sponsor app',
+  // States
+  'Rajasthan tourism', 'Kerala backwaters', 'Goa beaches', 'Himachal Pradesh trip',
+  'Uttarakhand travel', 'Ladakh travel', 'Kashmir tourism', 'Tamil Nadu temples',
+  'Karnataka tourism', 'Maharashtra travel', 'Northeast India travel', 'Sikkim tourism',
+  'Andaman Nicobar tourism', 'Punjab travel', 'Gujarat tourism', 'Madhya Pradesh tourism',
+  'West Bengal travel', 'Odisha tourism', 'Uttar Pradesh travel',
+  // Activities
+  'trekking india', 'backpacking trip india', 'road trip india', 'adventure sports india',
+  'spiritual tourism india', 'beach holiday india', 'mountain trek partner',
+  'desert safari rajasthan', 'monsoon travel destinations india', 'digital nomad india',
+  'festival travel india', 'temple tour india', 'wildlife safari india', 'honeymoon destinations india',
+  'budget travel india', 'luxury travel india', 'cultural tourism india', 'eco tourism india',
+];
 
 export const metadata: Metadata = {
   title: {
-    default: 'Luventra — Find Your Perfect Travel Partner',
-    template: '%s | Luventra',
+    default: 'Luventra — Find Travel Partners & Companions for Trips Across India',
+    template: '%s | Luventra — Find Travel Partners in India',
   },
-  description: 'Discover travel companions who match your vibe, budget, and adventure style. Plan trips together, split costs, or sponsor someone\'s journey. Join thousands of travelers connecting across India and Nepal.',
-  keywords: ['travel partner', 'travel buddy', 'find travel companion', 'group travel India', 'backpacking partner', 'travel sponsorship', 'co-travel', 'trip planning'],
+  description:
+    'Luventra connects you with verified travel partners and companions across India. Find a travel buddy for solo trips, group travel, backpacking adventures, or sponsored journeys. Discover state-level travel communities — from Rajasthan\'s deserts to Kerala\'s backwaters, Himachal\'s mountains to Goa\'s beaches. Plan trips together, split costs, and explore India safely with like-minded travelers.',
+  keywords: SEO_KEYWORDS,
   authors: [{ name: 'Luventra' }],
   creator: 'Luventra',
   publisher: 'Luventra',
-  metadataBase: new URL('https://luventra.com'),
+  metadataBase: new URL('https://luventra.co'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://luventra.co',
   },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://luventra.com',
+    url: 'https://luventra.co',
     siteName: 'Luventra',
-    title: 'Luventra — Find Your Perfect Travel Partner',
-    description: 'Connect with travelers who match your vibe. Sponsor trips, find sponsors, or just join the adventure.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Luventra - Travel Together' }],
+    title: 'Luventra — Find Travel Partners & Companions for Trips Across India',
+    description: 'Discover travel companions who match your vibe, budget, and adventure style. Plan trips together, split costs, or sponsor someone\'s journey across India.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Luventra - Travel Together Across India' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Luventra — Find Your Perfect Travel Partner',
-    description: 'Connect with travelers who match your vibe. Sponsor trips, find sponsors, or just join the adventure.',
+    title: 'Luventra — Find Travel Partners & Companions for Trips Across India',
+    description: 'Discover travel companions who match your vibe, budget, and adventure style. Plan trips together, split costs, or sponsor someone\'s journey across India.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -41,12 +67,19 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#dd7a3e',
+};
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Luventra',
   description: 'Find your perfect travel partner. Plan trips together, split costs, or sponsor someone\'s journey.',
-  url: 'https://luventra.com',
+  url: 'https://luventra.co',
   applicationCategory: 'TravelApplication',
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
@@ -69,6 +102,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen animated-bg antialiased">
         <AuthProvider>{children}</AuthProvider>
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   );

@@ -21,6 +21,11 @@ export async function GET(req: NextRequest) {
       where.userId = userId;
     } else {
       where.status = status;
+      // Exclude logged-in user's own trips from public listing
+      const currentUserId = await getCurrentUserId().catch(() => null);
+      if (currentUserId) {
+        where.userId = { not: currentUserId };
+      }
     }
     if (destination) where.destination = destination;
     if (sponsorType) where.sponsorType = sponsorType;

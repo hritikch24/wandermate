@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { CityData } from '@/data/cities';
+import { getStateBySlug } from '@/data/states';
 
 const VIBE_COLORS: Record<string, string> = {
   adventure: 'from-orange-500 to-red-500',
@@ -14,6 +15,7 @@ const VIBE_COLORS: Record<string, string> = {
 
 export default function CityCard({ city }: { city: CityData }) {
   const vibeColor = VIBE_COLORS[city.vibe] || 'from-brand-500 to-romantic-500';
+  const stateName = (city.state && getStateBySlug(city.state)?.name) || city.country;
 
   return (
     <Link href={`/city/${city.slug}`} className="group block">
@@ -42,7 +44,7 @@ export default function CityCard({ city }: { city: CityData }) {
             {city.tagline}
           </p>
           <div className="flex items-center gap-4 text-xs text-white/70">
-            <span>{city.state || city.country}</span>
+            <span>{stateName}</span>
             <span>·</span>
             <span>{city.avgBudget}</span>
             <span>·</span>

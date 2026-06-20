@@ -18,11 +18,11 @@ export async function GET() {
       },
     });
 
-    // Count accepted requests the user sent (good news notifications)
-    const acceptedSent = await prisma.tripRequest.count({
+    // Count unread messages
+    const unreadMessages = await prisma.message.count({
       where: {
-        userId,
-        status: 'accepted',
+        receiverId: userId,
+        read: false,
       },
     });
 
@@ -40,9 +40,9 @@ export async function GET() {
 
     return NextResponse.json({
       pendingRequests,
-      acceptedSent,
+      unreadMessages,
       pendingBookings,
-      total: pendingRequests + pendingBookings,
+      total: pendingRequests + unreadMessages + pendingBookings,
     });
   } catch (error) {
     console.error('Notifications GET error:', error);

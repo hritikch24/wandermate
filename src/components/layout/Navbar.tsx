@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { CITIES } from '@/data/cities';
+import { getStateBySlug } from '@/data/states';
 
 export default function Navbar({ currentCity }: { currentCity?: string }) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const currentUserId = (session?.user as { id?: string })?.id;
 
   // Poll for pending notifications every 30s when logged in
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
                       <span className="text-lg">{getVibeEmoji(city.vibe)}</span>
                       <div>
                         <div className="font-medium">{city.name}</div>
-                        <div className="text-xs text-gray-500">{city.state || city.country}</div>
+                        <div className="text-xs text-gray-500">{(city.state && getStateBySlug(city.state)?.name) || city.country}</div>
                       </div>
                     </Link>
                   ))}
@@ -101,13 +104,39 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
                     </span>
                   )}
                 </Link>
-                <span className="text-sm text-gray-600">Hi, {session.user?.name?.split(' ')[0]}</span>
-                <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors"
-                >
-                  Sign Out
-                </button>
+                <div className="relative" onMouseEnter={() => setProfileOpen(true)} onMouseLeave={() => setProfileOpen(false)}>
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-brand-50 transition-colors text-sm font-medium text-gray-700">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-romantic-400 flex items-center justify-center text-white text-xs font-bold">
+                      {session.user?.name?.charAt(0) || '?'}
+                    </div>
+                    {session.user?.name?.split(' ')[0]}
+                    <svg className={`w-3 h-3 transition-transform ${profileOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  {profileOpen && (
+                    <div className="absolute top-full right-0 mt-1 w-52 glass-card rounded-xl p-2 shadow-xl border border-white/30 animate-fade-in z-50">
+                      {currentUserId && (
+                        <Link href={`/profile/${currentUserId}`} className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-600">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                          My Profile
+                        </Link>
+                      )}
+                      <Link href="/profile/edit" className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-600">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        Edit Profile
+                      </Link>
+                      <Link href="/profile/verify" className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-600">
+                        <svg className="w-4 h-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                        Get Verified
+                      </Link>
+                      <hr className="my-1 border-gray-200" />
+                      <button onClick={() => signOut()}
+                        className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -165,6 +194,24 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
             <hr className="my-2 border-gray-200" />
             {session ? (
               <>
+                {currentUserId && (
+                  <Link href={`/profile/${currentUserId}`} onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-brand-50">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    My Profile
+                  </Link>
+                )}
+                <Link href="/profile/edit" onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-brand-50">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  Edit Profile
+                </Link>
+                <Link href="/profile/verify" onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-brand-50">
+                  <svg className="w-4 h-4 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                  Get Verified
+                </Link>
+                <hr className="my-1 border-gray-200" />
                 <Link href="/chat" onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-brand-50">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>

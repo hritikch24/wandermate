@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CITIES, SAMPLE_TRAVELERS, SAMPLE_GUIDES, TravelerProfile, GuideProfile } from '@/data/cities';
+import { getStateBySlug } from '@/data/states';
 import prisma from '@/lib/prisma';
 import CityPageClient from './CityPageClient';
 
@@ -14,8 +15,11 @@ export function generateMetadata({ params }: Props): Metadata {
   const city = CITIES[params.city];
   if (!city) return {};
 
+  const stateData = city.state ? getStateBySlug(city.state) : undefined;
+  const stateName = stateData?.name || '';
+
   const title = `Find Travel Partners in ${city.name} — Luventra`;
-  const description = `Looking for a travel buddy in ${city.name}, ${city.state || city.country}? Connect with verified travelers, plan trips together, and explore ${city.name}. ${city.description}`;
+  const description = `Looking for a travel buddy in ${city.name}, ${stateName || city.country}? Connect with verified travelers, plan trips together, and explore ${city.name}. ${city.description}`;
 
   return {
     title,
@@ -35,7 +39,7 @@ export function generateMetadata({ params }: Props): Metadata {
     },
     twitter: { card: 'summary_large_image', title, description, images: [city.heroImage] },
     other: {
-      'geo.region': city.country === 'India' ? `IN-${city.state?.substring(0, 2).toUpperCase()}` : 'NP',
+      'geo.region': city.country === 'India' ? `IN-${stateName.substring(0, 2).toUpperCase()}` : 'NP',
       'geo.placename': city.name,
       'geo.position': `${city.coordinates.lat};${city.coordinates.lng}`,
       'ICBM': `${city.coordinates.lat}, ${city.coordinates.lng}`,
@@ -127,6 +131,8 @@ export default async function CityPage({ params }: Props) {
 
   const otherTravelers = SAMPLE_TRAVELERS.filter((t) => t.destination !== city.slug).slice(0, 4);
 
+  const cityStateData = city.state ? getStateBySlug(city.state) : undefined;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
@@ -136,7 +142,7 @@ export default async function CityPage({ params }: Props) {
     touristType: city.vibe,
     containedInPlace: {
       '@type': 'AdministrativeArea',
-      name: city.state || city.country,
+      name: cityStateData?.name || city.country,
       containedInPlace: { '@type': 'Country', name: city.country },
     },
     url: `https://luventra.com/city/${city.slug}`,

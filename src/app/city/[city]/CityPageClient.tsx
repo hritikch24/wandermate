@@ -9,6 +9,7 @@ import GuideCard from '@/components/features/GuideCard';
 import SearchModeToggle from '@/components/features/SearchModeToggle';
 import TripPlanModal from '@/components/features/TripPlanModal';
 import { CityData, TravelerProfile, GuideProfile, CITIES, SearchMode } from '@/data/cities';
+import { getStateBySlug } from '@/data/states';
 
 const VIBE_GRADIENTS: Record<string, string> = {
   adventure: 'from-orange-600 via-red-600 to-amber-600',
@@ -33,6 +34,7 @@ export default function CityPageClient({
   const [modalOpen, setModalOpen] = useState(false);
   const [searchMode, setSearchMode] = useState<SearchMode>('partner');
   const vibeGradient = VIBE_GRADIENTS[city.vibe] || VIBE_GRADIENTS.adventure;
+  const stateName = (city.state && getStateBySlug(city.state)?.name) || city.country;
 
   return (
     <>
@@ -93,7 +95,7 @@ export default function CityPageClient({
           <div className="glass-card rounded-2xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 shadow-xl">
             <div className="text-center">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Location</p>
-              <p className="font-semibold text-gray-900">{city.state || city.country}</p>
+              <p className="font-semibold text-gray-900">{stateName}</p>
             </div>
             <div className="text-center">
               <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Best Time</p>

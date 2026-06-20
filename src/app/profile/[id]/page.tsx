@@ -20,6 +20,7 @@ interface UserProfile {
   twitter: string | null;
   linkedin: string | null;
   verified: boolean;
+  aadhaarVerified: boolean;
   rating: number;
   tripsCount: number;
   createdAt: string;
@@ -102,9 +103,13 @@ export default function ProfilePage() {
           {/* Profile Header */}
           <div className="glass-card rounded-2xl p-8 mb-6">
             <div className="flex flex-col sm:flex-row items-start gap-6">
-              <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${colorClass} flex items-center justify-center text-white text-3xl font-bold shrink-0`}>
-                {initials}
-              </div>
+              {profile.avatar ? (
+                <img src={profile.avatar} alt={profile.name} className="w-24 h-24 rounded-2xl object-cover shrink-0 border-4 border-white shadow-lg" />
+              ) : (
+                <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${colorClass} flex items-center justify-center text-white text-3xl font-bold shrink-0`}>
+                  {initials}
+                </div>
+              )}
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                   <h1 style={{ fontFamily: 'var(--font-display)' }} className="text-2xl font-bold text-gray-900">{profile.name}</h1>

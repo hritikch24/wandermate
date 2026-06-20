@@ -73,9 +73,13 @@ export default function ChatListPage() {
                 return (
                   <Link key={conv.partner.id} href={`/chat/${conv.partner.id}`}
                     className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all hover:shadow-md ${conv.unread ? 'glass-card border-2 border-brand-200' : 'glass-card'}`}>
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white font-bold shrink-0`}>
-                      {initials}
-                    </div>
+                    {conv.partner.avatar ? (
+                      <img src={conv.partner.avatar} alt={conv.partner.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
+                    ) : (
+                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white font-bold shrink-0`}>
+                        {initials}
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
                         <span className={`font-semibold text-sm ${conv.unread ? 'text-gray-900' : 'text-gray-700'}`}>{conv.partner.name}</span>

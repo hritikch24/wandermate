@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
           ],
         },
         orderBy: { createdAt: 'asc' },
-        include: {
+        select: {
+          id: true, content: true, createdAt: true, read: true, senderId: true, receiverId: true,
           sender: { select: { id: true, name: true, avatar: true } },
         },
       });

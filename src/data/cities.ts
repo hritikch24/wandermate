@@ -1,3 +1,5 @@
+import { getStateBySlug } from './states';
+
 export interface CityData {
   slug: string;
   name: string;
@@ -10,6 +12,7 @@ export interface CityData {
   avgBudget: string;
   popularTrips: TripTemplate[];
   coordinates: { lat: number; lng: number };
+  /** State slug (key into STATES from ./states), or '' for non-Indian destinations */
   state: string;
   country: string;
 }
@@ -52,7 +55,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'March to June, September to November',
     avgBudget: '₹2,000 - ₹5,000/day',
     coordinates: { lat: 30.3165, lng: 78.0322 },
-    state: 'Uttarakhand',
+    state: 'uttarakhand',
     country: 'India',
     popularTrips: [
       { id: 'dd-1', title: 'Dehradun Heritage Walk', duration: '1 day', difficulty: 'easy', estimatedCost: '₹1,500', highlights: ['FRI', 'Clock Tower', 'Paltan Bazaar'] },
@@ -70,7 +73,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'April to June, September to November',
     avgBudget: '₹2,500 - ₹6,000/day',
     coordinates: { lat: 30.4598, lng: 78.0644 },
-    state: 'Uttarakhand',
+    state: 'uttarakhand',
     country: 'India',
     popularTrips: [
       { id: 'ms-1', title: 'Mussoorie Romantic Getaway', duration: '3 days', difficulty: 'easy', estimatedCost: '₹8,000', highlights: ['Mall Road', 'Company Garden', 'Sunset at Gun Hill'] },
@@ -88,7 +91,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'February to May, September to November',
     avgBudget: '₹1,500 - ₹4,000/day',
     coordinates: { lat: 30.0869, lng: 78.2676 },
-    state: 'Uttarakhand',
+    state: 'uttarakhand',
     country: 'India',
     popularTrips: [
       { id: 'rk-1', title: 'Rafting & Camping Adventure', duration: '2 days', difficulty: 'moderate', estimatedCost: '₹4,500', highlights: ['16km rafting', 'Beach camping', 'Bonfire night'] },
@@ -106,7 +109,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'March to June, October to February',
     avgBudget: '₹2,000 - ₹5,000/day',
     coordinates: { lat: 31.9579, lng: 77.1095 },
-    state: 'Himachal Pradesh',
+    state: 'himachal-pradesh',
     country: 'India',
     popularTrips: [
       { id: 'kl-1', title: 'Kullu Valley Explorer', duration: '3 days', difficulty: 'moderate', estimatedCost: '₹7,000', highlights: ['Bijli Mahadev', 'Paragliding', 'River crossing'] },
@@ -124,7 +127,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'October to February (snow), March to June (pleasant)',
     avgBudget: '₹2,500 - ₹7,000/day',
     coordinates: { lat: 32.2432, lng: 77.1892 },
-    state: 'Himachal Pradesh',
+    state: 'himachal-pradesh',
     country: 'India',
     popularTrips: [
       { id: 'mn-1', title: 'Solang Valley Snow Adventure', duration: '2 days', difficulty: 'moderate', estimatedCost: '₹5,500', highlights: ['Skiing', 'Snowboarding', 'Cable car', 'Igloo stay'] },
@@ -142,7 +145,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'November to February',
     avgBudget: '₹3,000 - ₹8,000/day',
     coordinates: { lat: 15.2993, lng: 74.124 },
-    state: 'Goa',
+    state: 'goa',
     country: 'India',
     popularTrips: [
       { id: 'ga-1', title: 'North Goa Beach Hopping', duration: '3 days', difficulty: 'easy', estimatedCost: '₹9,000', highlights: ['Baga', 'Calangute', 'Anjuna', 'Vagator'] },
@@ -160,7 +163,7 @@ export const CITIES: Record<string, CityData> = {
     bestTime: 'September to March',
     avgBudget: '₹3,000 - ₹8,000/day',
     coordinates: { lat: 10.8505, lng: 76.2711 },
-    state: 'Kerala',
+    state: 'kerala',
     country: 'India',
     popularTrips: [
       { id: 'ke-1', title: 'Backwater Houseboat Experience', duration: '2 days', difficulty: 'easy', estimatedCost: '₹8,000', highlights: ['Alleppey houseboat', 'Village walks', 'Kerala cuisine'] },
@@ -188,6 +191,17 @@ export const CITIES: Record<string, CityData> = {
 };
 
 export const CITY_SLUGS = Object.keys(CITIES);
+
+/**
+ * Returns the full StateData object for a given city, by resolving the
+ * city's `state` slug against the STATES data in ./states.
+ * Returns undefined for cities with no associated Indian state (e.g. Nepal).
+ */
+export function getCityState(citySlug: string) {
+  const city = CITIES[citySlug];
+  if (!city || !city.state) return undefined;
+  return getStateBySlug(city.state);
+}
 
 export type SearchMode = 'partner' | 'guide';
 

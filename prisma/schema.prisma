@@ -16,7 +16,9 @@ model User {
   avatar        String?
   bio           String?
   age           Int?
-  phone         String?
+  phone         String    @unique
+  phoneVerified Boolean   @default(false)
+  aadhaarVerified Boolean @default(false)
   languages     String    @default("[]")
   interests     String    @default("[]")
   travelStyle   String?
@@ -157,4 +159,85 @@ model Booking {
   @@index([userId])
   @@index([guideId])
   @@index([status])
+}
+
+model PhoneOtp {
+  id        String   @id @default(cuid())
+  phone     String
+  otp       String
+  purpose   String   @default("register") // register | aadhaar
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone, purpose])
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  path        String
+  referrer    String?
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  device      String?
+  browser     String?
+  country     String?
+  ip          String?
+  sessionId   String   @map("session_id")
+  subdomain   String?
+  createdAt   DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@index([subdomain])
+  @@map("page_views")
+}
+
+model ButtonClick {
+  id          String   @id @default(cuid())
+  action      String   // connect_request, book_guide, chat_start, signup, profile_view, trip_create
+  page        String
+  targetId    String?
+  referrer    String?
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  device      String?
+  browser     String?
+  country     String?
+  ip          String?
+  sessionId   String   @map("session_id")
+  subdomain   String?
+  createdAt   DateTime @default(now())
+
+  @@index([action])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@map("button_clicks")
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  coverImage  String?
+  category    String   // hidden-gems, itinerary, guide, packing, festival, food, budget
+  state       String?
+  city        String?
+  tags        String   @default("[]") // JSON array
+  author      String   @default("Luventra Team")
+  published   Boolean  @default(true)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([state])
+  @@index([published])
+  @@map("blog_posts")
 }

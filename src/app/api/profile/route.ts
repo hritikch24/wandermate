@@ -17,7 +17,7 @@ export async function GET() {
         id: true, name: true, email: true, avatar: true, bio: true, age: true,
         phone: true, languages: true, interests: true, travelStyle: true,
         instagram: true, facebook: true, twitter: true, linkedin: true,
-        verified: true, rating: true, tripsCount: true, createdAt: true,
+        verified: true, aadhaarVerified: true, rating: true, tripsCount: true, createdAt: true,
       },
     });
 

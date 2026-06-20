@@ -10,6 +10,9 @@ interface Message {
   id: string;
   content: string;
   createdAt: string;
+  read: boolean;
+  senderId: string;
+  receiverId: string;
   sender: { id: string; name: string; avatar: string | null };
 }
 
@@ -131,9 +134,13 @@ export default function ChatPage() {
                 <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               </button>
               <Link href={`/profile/${partnerId}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white text-sm font-bold`}>
-                  {partnerInitials}
-                </div>
+                {partner?.avatar ? (
+                  <img src={partner.avatar} alt={partner.name} className="w-10 h-10 rounded-full object-cover" />
+                ) : (
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white text-sm font-bold`}>
+                    {partnerInitials}
+                  </div>
+                )}
                 <div>
                   <div className="font-semibold text-gray-900 text-sm">{partner?.name || 'Loading...'}</div>
                   {partner?.travelStyle && <div className="text-xs text-gray-500">{partner.travelStyle}</div>}
@@ -212,9 +219,21 @@ export default function ChatPage() {
                       : 'glass-card text-gray-800 rounded-bl-md'
                   }`}>
                     <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                    <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-gray-400'}`}>
-                      {new Date(msg.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
+                    <div className={`flex items-center justify-end gap-1 mt-1 ${isMe ? 'text-white/60' : 'text-gray-400'}`}>
+                      <span className="text-[10px]">{new Date(msg.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span>
+                      {isMe && (
+                        msg.read ? (
+                          <svg className="w-4 h-3" viewBox="0 0 24 14" fill="none">
+                            <path d="M1 7l4 4L13 3" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M7 7l4 4L19 3" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        ) : (
+                          <svg className="w-3 h-3" viewBox="0 0 14 14" fill="none">
+                            <path d="M1 7l4 4L13 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )
+                      )}
+                    </div>
                   </div>
                 </div>
               );

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { CITIES } from '@/data/cities';
+import { getStateBySlug } from '@/data/states';
 
 export default function Footer() {
   return (
@@ -41,7 +42,7 @@ export default function Footer() {
               {Object.values(CITIES).map((city) => (
                 <li key={city.slug}>
                   <Link href={`/city/${city.slug}`} className="text-sm text-gray-300 hover:text-brand-400 transition-colors">
-                    {city.name} {city.state && `(${city.state})`}
+                    {city.name} {city.state && getStateBySlug(city.state) && `(${getStateBySlug(city.state)!.name})`}
                   </Link>
                 </li>
               ))}
