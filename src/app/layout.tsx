@@ -2,6 +2,13 @@ import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import AuthProvider from '@/components/providers/AuthProvider';
 import Analytics from '@/components/Analytics';
+import AIChatbot from '@/components/AIChatbot';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
+import WelcomePopup from '@/components/WelcomePopup';
+import SocialShareWidget from '@/components/SocialShareWidget';
+import SocialProofToast from '@/components/SocialProofToast';
+import CookieConsent from '@/components/CookieConsent';
+import ReadingProgress from '@/components/ReadingProgress';
 import '@/styles/globals.css';
 
 const RAW_SEO_KEYWORDS = [
@@ -138,6 +145,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={null}>
           <Analytics />
         </Suspense>
+        <ReadingProgress />
+        <AIChatbot />
+        <SocialShareWidget />
+        <SocialProofToast />
+        <ExitIntentPopup />
+        <WelcomePopup />
+        <CookieConsent />
       </body>
     </html>
   );
