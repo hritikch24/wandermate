@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
-type Tab = 'received' | 'sent' | 'my-trips' | 'bookings';
+type Tab = 'received' | 'sent' | 'my-trips' | 'my-groups' | 'bookings';
 
 interface TripRequest {
   id: string;
@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [sentRequests, setSentRequests] = useState<TripRequest[]>([]);
   const [myTrips, setMyTrips] = useState<Trip[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
@@ -60,11 +61,13 @@ export default function DashboardPage() {
       fetch('/api/trip-requests?type=sent').then(r => r.json()).catch(() => ({ requests: [] })),
       fetch('/api/trips?mine=true').then(r => r.json()).catch(() => ({ trips: [] })),
       fetch('/api/bookings').then(r => r.json()).catch(() => ({ bookings: [] })),
-    ]).then(([received, sent, trips, bk]) => {
+      fetch('/api/groups').then(r => r.json()).catch(() => ({ groups: [] })),
+    ]).then(([received, sent, trips, bk, grp]) => {
       setReceivedRequests(received.requests || []);
       setSentRequests(sent.requests || []);
       setMyTrips(trips.trips || []);
       setBookings(bk.bookings || []);
+      setGroups(grp.groups || []);
     }).finally(() => setLoading(false));
   }, [authStatus]);
 
@@ -102,6 +105,7 @@ export default function DashboardPage() {
     { key: 'received', label: 'Received Requests', count: receivedRequests.filter(r => r.status === 'pending').length },
     { key: 'sent', label: 'Sent Requests', count: sentRequests.length },
     { key: 'my-trips', label: 'My Trips', count: myTrips.length },
+    { key: 'my-groups', label: 'My Groups', count: groups.length },
     { key: 'bookings', label: 'My Bookings', count: bookings.length },
   ];
 
@@ -283,6 +287,48 @@ export default function DashboardPage() {
                         {trip.destination} · {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
                       </p>
                     </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* My Groups */}
+          {tab === 'my-groups' && (
+            <div className="space-y-4">
+              {groups.length === 0 ? (
+                <div className="glass-card rounded-2xl p-12 text-center">
+                  <p className="text-gray-500 mb-4">No trip groups yet. Join a trip or accept requests to form a group!</p>
+                  <Link href="/trips" className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-romantic-500">
+                    Browse Trips
+                  </Link>
+                </div>
+              ) : groups.map((group: any) => (
+                <div key={group.id} className="glass-card rounded-2xl p-6">
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-gray-900">{group.trip?.title || group.name}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 text-xs font-medium">{group.memberCount} members</span>
+                      </div>
+                      <p className="text-sm text-gray-500">{group.trip?.destination} · {group.myRole === 'owner' ? 'You created this' : 'Member'}</p>
+                      {group.lastMessage && (
+                        <p className="text-xs text-gray-400 mt-1">Last: {group.lastMessage.sender?.name}: {group.lastMessage.content?.slice(0, 40)}...</p>
+                      )}
+                    </div>
+                    <Link href={`/trip/${group.trip?.id}/chat`}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-brand-500 to-romantic-500 hover:shadow-lg transition-all">
+                      Open Chat
+                    </Link>
+                  </div>
+                  {/* Member avatars */}
+                  <div className="flex -space-x-2 mt-3">
+                    {group.members?.slice(0, 6).map((m: any) => (
+                      <div key={m.user?.id || m.id} className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-romantic-400 flex items-center justify-center text-white font-bold text-xs border-2 border-white" title={m.user?.name}>
+                        {m.user?.name?.split(' ').map((n: string) => n[0]).join('') || '?'}
+                      </div>
+                    ))}
+                    {group.memberCount > 6 && <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 border-2 border-white">+{group.memberCount - 6}</div>}
                   </div>
                 </div>
               ))}

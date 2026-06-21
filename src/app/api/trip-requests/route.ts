@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUserId } from '@/lib/session';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/trip-requests — get requests for current user's trips or sent by current user
 export async function GET(req: NextRequest) {
   try {
@@ -131,6 +133,44 @@ export async function PATCH(req: NextRequest) {
         trip: { select: { id: true, title: true, destination: true } },
       },
     });
+
+    // Auto-manage group membership when a request is accepted
+    if (status === 'accepted') {
+      try {
+        let group: any = await prisma.tripGroup.findUnique({
+          where: { tripId: tripRequest.tripId },
+        });
+
+        if (!group) {
+          // Create group with trip title and add trip owner as owner member
+          group = await prisma.tripGroup.create({
+            data: {
+              tripId: tripRequest.tripId,
+              name: tripRequest.trip.title,
+              members: {
+                create: { userId: tripRequest.trip.userId, role: 'owner' },
+              },
+            },
+          });
+        }
+
+        // Add the accepted user as a member (ignore if already exists)
+        await prisma.tripMember.upsert({
+          where: {
+            groupId_userId: { groupId: group.id, userId: tripRequest.userId },
+          },
+          update: {},
+          create: {
+            groupId: group.id,
+            userId: tripRequest.userId,
+            role: 'member',
+          },
+        });
+      } catch (groupError) {
+        // Log but don't fail the request acceptance
+        console.error('Auto-group creation error:', groupError);
+      }
+    }
 
     return NextResponse.json({ request: updated });
   } catch (error) {

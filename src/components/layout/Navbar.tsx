@@ -75,14 +75,14 @@ export default function Navbar({ currentCity }: { currentCity?: string }) {
                 </div>
               )}
             </div>
-            <Link href="/#how-it-works" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
+            <Link href="/trips" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
+              Browse Trips
+            </Link>
+            <Link href="/how-it-works" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
               How It Works
             </Link>
-            <Link href="/#travelers" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
-              Find Partners
-            </Link>
-            <Link href="/#safety" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
-              Safety
+            <Link href="/blog" className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50 transition-all">
+              Blog
             </Link>
           </div>
 

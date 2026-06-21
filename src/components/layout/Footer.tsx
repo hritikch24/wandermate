@@ -53,11 +53,16 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-sm uppercase tracking-wider text-gray-400 mb-4">Company</h3>
             <ul className="space-y-2">
+              <li><Link href="/about" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">About Us</Link></li>
+              <li><Link href="/how-it-works" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">How It Works</Link></li>
+              <li><Link href="/safety" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Safety Guidelines</Link></li>
               <li><Link href="/blog" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Blog</Link></li>
-              <li><Link href="/travel-guide" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Travel Guides</Link></li>
-              <li><Link href="/destinations" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Destinations</Link></li>
               <li><Link href="/contact" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Contact Us</Link></li>
-              <li><Link href="/auth/register" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Join Luventra</Link></li>
+            </ul>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-gray-400 mb-4 mt-6">Legal</h3>
+            <ul className="space-y-2">
+              <li><Link href="/terms" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="text-sm text-gray-300 hover:text-brand-400 transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 
